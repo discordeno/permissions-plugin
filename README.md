@@ -10,8 +10,8 @@ This is an official plugin maintained by Discordeno. This plugin provides automa
 
 ```ts
 // MOVE TO DEPS.TS AND USE SPECIFIC VERSION
-import enableCachePlugin from "https://deno.land/x/discordeno-cache-plugin/mod.ts";
-import enablePermissionPlugin from "https://deno.land/x/discordeno-permission-plugin/mod.ts";
+import enableCachePlugin from "https://deno.land/x/discordeno_cache_plugin/mod.ts";
+import enablePermissionPlugin from "https://deno.land/x/discordeno_permission_plugin/mod.ts";
 
 // Create the bot object, THIS WILL NEED YOUR OPTIONS.
 const bot = createBot({});
