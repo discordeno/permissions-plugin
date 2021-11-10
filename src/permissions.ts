@@ -44,8 +44,8 @@ export async function calculateBasePermissions(
   guildOrId: bigint | DiscordenoGuild,
   memberOrId: bigint | DiscordenoMember,
 ) {
-  const guild = await bot.utils.getCached(bot, "guilds", guildOrId);
-  const member = await bot.utils.getCached(bot, "members", memberOrId);
+  const guild = await getCached(bot, "guilds", guildOrId);
+  const member = await getCached(bot, "members", memberOrId);
 
   if (!guild || !member) return 8n;
 
@@ -72,12 +72,12 @@ export async function calculateChannelOverwrites(
   channelOrId: bigint | DiscordenoChannel,
   memberOrId: bigint | DiscordenoMember,
 ) {
-  const channel = await bot.utils.getCached(bot, "channels", channelOrId);
+  const channel = await getCached(bot, "channels", channelOrId);
 
   // This is a DM channel so return ADMINISTRATOR permission
   if (!channel?.guildId) return 8n;
 
-  const member = await bot.utils.getCached(bot, "members", memberOrId);
+  const member = await getCached(bot, "members", memberOrId);
 
   if (!channel || !member) return 8n;
 
@@ -360,12 +360,12 @@ export async function highestRole(
   guildOrId: bigint | DiscordenoGuild,
   memberOrId: bigint | DiscordenoMember,
 ) {
-  const guild = await bot.utils.getCached(bot, "guilds", guildOrId);
+  const guild = await getCached(bot, "guilds", guildOrId);
 
   if (!guild) throw new Error(Errors.GUILD_NOT_FOUND);
 
   // Get the roles from the member
-  const memberRoles = (await bot.utils.getCached(bot, "members", memberOrId))
+  const memberRoles = (await getCached(bot, "members", memberOrId))
     ?.roles;
   // This member has no roles so the highest one is the @everyone role
   if (!memberRoles) return guild.roles.get(guild.id)!;
@@ -399,7 +399,7 @@ export async function higherRolePosition(
   roleId: bigint,
   otherRoleId: bigint,
 ) {
-  const guild = await bot.utils.getCached(bot, "guilds", guildOrId);
+  const guild = await getCached(bot, "guilds", guildOrId);
 
   if (!guild) return true;
 
@@ -422,7 +422,7 @@ export async function isHigherPosition(
   memberId: bigint,
   compareRoleId: bigint,
 ) {
-  const guild = await bot.utils.getCached(bot, "guilds", guildOrId);
+  const guild = await getCached(bot, "guilds", guildOrId);
 
   if (!guild || guild.ownerId === memberId) return true;
 
