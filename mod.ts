@@ -21,3 +21,4 @@ export function enablePermissionsPlugin(bot: Bot) {
 }
 
 export * from "./src/permissions.ts";
+export default enablePermissionsPlugin;
