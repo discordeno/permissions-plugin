@@ -19,3 +19,5 @@ export function enablePermissionsPlugin(bot: Bot) {
   // PLUGINS MUST RETURN THE BOT
   return bot;
 }
+
+export * from "./src/permissions.ts";
