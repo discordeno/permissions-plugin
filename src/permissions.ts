@@ -8,7 +8,7 @@ import {
   Errors,
   Overwrite,
   PermissionStrings,
-  separate,
+  separateOverwrites,
 } from "../deps.ts";
 
 export async function getCached(
@@ -90,11 +90,11 @@ export async function calculateChannelOverwrites(
 
   // First calculate @everyone overwrites since these have the lowest priority
   const overwriteEveryone = channel.permissionOverwrites?.find((overwrite) => {
-    const [_, id] = separate(overwrite);
+    const [_, id] = separateOverwrites(overwrite);
     return id === channel.guildId;
   });
   if (overwriteEveryone) {
-    const [_type, _id, allow, deny] = separate(overwriteEveryone);
+    const [_type, _id, allow, deny] = separateOverwrites(overwriteEveryone);
     // First remove denied permissions since denied < allowed
     permissions &= ~deny;
     permissions |= allow;
@@ -108,7 +108,7 @@ export async function calculateChannelOverwrites(
   const memberRoles = member.roles || [];
   // Second calculate members role overwrites since these have middle priority
   for (const overwrite of overwrites || []) {
-    const [_type, id, allowBits, denyBits] = separate(overwrite);
+    const [_type, id, allowBits, denyBits] = separateOverwrites(overwrite);
 
     if (!memberRoles.includes(id)) continue;
 
@@ -121,11 +121,11 @@ export async function calculateChannelOverwrites(
 
   // Third calculate member specific overwrites since these have the highest priority
   const overwriteMember = overwrites?.find((overwrite) => {
-    const [_, id] = separate(overwrite);
+    const [_, id] = separateOverwrites(overwrite);
     return id === member.id;
   });
   if (overwriteMember) {
-    const [_type, _id, allowBits, denyBits] = separate(overwriteMember);
+    const [_type, _id, allowBits, denyBits] = separateOverwrites(overwriteMember);
 
     permissions &= ~denyBits;
     permissions |= allowBits;
