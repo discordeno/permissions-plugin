@@ -5,7 +5,7 @@ import {
 } from "./permissions.ts";
 
 export default function editMember(bot: Bot) {
-  const editMember = bot.helpers.editMember;
+  const editMemberOld = bot.helpers.editMember;
 
   bot.helpers.editMember = async function (guildId, memberId, options) {
     const requiredPerms: Set<PermissionStrings> = new Set();
@@ -62,6 +62,6 @@ export default function editMember(bot: Bot) {
       ...requiredPerms,
     ]);
 
-    return editMember(guildId, memberId, options);
+    return editMemberOld(guildId, memberId, options);
   };
 }

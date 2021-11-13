@@ -19,3 +19,8 @@ export function enablePermissionsPlugin(bot: Bot) {
   // PLUGINS MUST RETURN THE BOT
   return bot;
 }
+
+// EXPORT ALL UTIL FUNCTIONS
+export * from "./src/permissions.ts"
+// DEFAULT MAKES IT SLIGHTLY EASIER TO USE
+export default enablePermissionsPlugin;
