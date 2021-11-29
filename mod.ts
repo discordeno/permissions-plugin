@@ -1,4 +1,5 @@
 import { Bot } from "./deps.ts";
+import setupAddToThread from "./src/channels/threads/addToThread.ts";
 import setupDeleteChannel from "./src/deleteChannel.ts";
 import setupEditMember from "./src/editMember.ts";
 
@@ -13,6 +14,7 @@ export function enablePermissionsPlugin(bot: Bot) {
   bot.enabledPlugins.add("PERMISSIONS");
 
   // BEGIN OVERRIDING HELPER FUNCTIONS
+  setupAddToThread(bot);
   setupDeleteChannel(bot);
   setupEditMember(bot);
 
