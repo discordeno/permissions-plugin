@@ -1,5 +1,6 @@
 import { Bot } from "./deps.ts";
 import setupAddToThread from "./src/channels/threads/addToThread.ts";
+import setupGetArchivedThreads from "./src/channels/threads/getArchivedThreads.ts";
 import setupDeleteChannel from "./src/deleteChannel.ts";
 import setupEditMember from "./src/editMember.ts";
 
@@ -17,12 +18,13 @@ export function enablePermissionsPlugin(bot: Bot) {
   setupAddToThread(bot);
   setupDeleteChannel(bot);
   setupEditMember(bot);
+  setupGetArchivedThreads(bot);
 
   // PLUGINS MUST RETURN THE BOT
   return bot;
 }
 
 // EXPORT ALL UTIL FUNCTIONS
-export * from "./src/permissions.ts"
+export * from "./src/permissions.ts";
 // DEFAULT MAKES IT SLIGHTLY EASIER TO USE
 export default enablePermissionsPlugin;
