@@ -1,6 +1,6 @@
 import {
   Bot,
-  DiscordBitwisePermissionFlags,
+  BitwisePermissionFlags,
   DiscordenoChannel,
   DiscordenoGuild,
   DiscordenoMember,
@@ -144,7 +144,7 @@ export function validatePermissions(
   return permissions.every(
     (permission) =>
       // Check if permission is in permissionBits
-      permissionBits & BigInt(DiscordBitwisePermissionFlags[permission]),
+      permissionBits & BigInt(BitwisePermissionFlags[permission]),
   );
 }
 
@@ -210,7 +210,7 @@ export function missingPermissions(
   if (permissionBits & 8n) return [];
 
   return permissions.filter((permission) =>
-    !(permissionBits & BigInt(DiscordBitwisePermissionFlags[permission]))
+    !(permissionBits & BigInt(BitwisePermissionFlags[permission]))
   );
 }
 
@@ -308,12 +308,12 @@ export function requireBotChannelPermissions(
 
 /** This function converts a bitwise string to permission strings */
 export function calculatePermissions(permissionBits: bigint) {
-  return Object.keys(DiscordBitwisePermissionFlags).filter((permission) => {
+  return Object.keys(BitwisePermissionFlags).filter((permission) => {
     // Since Object.keys() not only returns the permission names but also the bit values we need to return false if it is a Number
     if (Number(permission)) return false;
     // Check if permissionBits has this permission
     return permissionBits &
-      BigInt(DiscordBitwisePermissionFlags[permission as PermissionStrings]);
+      BigInt(BitwisePermissionFlags[permission as PermissionStrings]);
   }) as PermissionStrings[];
 }
 
@@ -321,7 +321,7 @@ export function calculatePermissions(permissionBits: bigint) {
 export function calculateBits(permissions: PermissionStrings[]) {
   return permissions
     .reduce((bits, perm) => {
-      bits |= BigInt(DiscordBitwisePermissionFlags[perm]);
+      bits |= BigInt(BitwisePermissionFlags[perm]);
       return bits;
     }, 0n)
     .toString();
