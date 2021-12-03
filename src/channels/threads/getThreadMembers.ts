@@ -1,6 +1,6 @@
-import { Bot, GatewayIntents } from "../../../deps.ts";
+import { BotWithCache, GatewayIntents } from "../../../deps.ts";
 
-export default function getThreadMembers(bot: Bot) {
+export default function getThreadMembers(bot: BotWithCache) {
   const getThreadMembersOld = bot.helpers.getThreadMembers;
 
   bot.helpers.getThreadMembers = function (threadId) {

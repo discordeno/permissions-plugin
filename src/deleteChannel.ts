@@ -1,14 +1,14 @@
-import { Bot } from "../deps.ts";
+import { BotWithCache } from "../deps.ts";
 import { requireBotGuildPermissions } from "./permissions.ts";
 
-export default function deleteChannel(bot: Bot) {
+export default function deleteChannel(bot: BotWithCache) {
   const deleteChannelOld = bot.helpers.deleteChannel;
 
   bot.helpers.deleteChannel = async function (channelId, reason) {
-    const channel = await bot.cache.channels.get(channelId);
+    const channel = await bot.channels.get(channelId);
 
     if (channel?.guildId) {
-      const guild = await bot.cache.guilds.get(channel.guildId);
+      const guild = await bot.guilds.get(channel.guildId);
       if (!guild) throw new Error("GUILD_NOT_FOUND");
 
       if (guild.rulesChannelId === channelId) {

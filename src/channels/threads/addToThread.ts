@@ -1,7 +1,7 @@
-import { Bot, Cache } from "../../../deps.ts";
+import { BotWithCache } from "../../../deps.ts";
 import { requireBotChannelPermissions } from "../../permissions.ts";
 
-export default function addToThread(bot: Bot<Cache>) {
+export default function addToThread(bot: BotWithCache) {
   const addToThreadOld = bot.helpers.addToThread;
 
   bot.helpers.addToThread = async function (threadId, userId) {
@@ -11,7 +11,7 @@ export default function addToThread(bot: Bot<Cache>) {
       );
     }
 
-    const channel = bot.cache.channels.get(threadId);
+    const channel = bot.channels.get(threadId);
 
     if (channel) {
       if (channel.archived) {

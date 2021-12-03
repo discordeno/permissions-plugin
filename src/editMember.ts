@@ -1,10 +1,10 @@
-import { Bot, PermissionStrings } from "../deps.ts";
+import { BotWithCache, PermissionStrings } from "../deps.ts";
 import {
   requireBotChannelPermissions,
   requireBotGuildPermissions,
 } from "./permissions.ts";
 
-export default function editMember(bot: Bot) {
+export default function editMember(bot: BotWithCache) {
   const editMemberOld = bot.helpers.editMember;
 
   bot.helpers.editMember = async function (guildId, memberId, options) {
@@ -23,7 +23,7 @@ export default function editMember(bot: Bot) {
       options.mute !== undefined || options.deaf !== undefined ||
       options.channelId !== undefined
     ) {
-      const memberVoiceState = (await bot.cache.guilds.get(guildId))
+      const memberVoiceState = (await bot.guilds.get(guildId))
         ?.voiceStates.get(memberId);
 
       if (!memberVoiceState?.channelId) {

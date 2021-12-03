@@ -1,6 +1,6 @@
 import {
-  Bot,
   BitwisePermissionFlags,
+  BotWithCache,
   DiscordenoChannel,
   DiscordenoGuild,
   DiscordenoMember,
@@ -11,41 +11,18 @@ import {
   separateOverwrites,
 } from "../deps.ts";
 
-export async function getCached(
-  bot: Bot,
-  table: "guilds",
-  key: bigint | DiscordenoGuild,
-): Promise<DiscordenoGuild | undefined>;
-export async function getCached(
-  bot: Bot,
-  table: "channels",
-  key: bigint | DiscordenoChannel,
-): Promise<DiscordenoChannel | undefined>;
-export async function getCached(
-  bot: Bot,
-  table: "members",
-  key: bigint | DiscordenoMember,
-): Promise<DiscordenoMember | undefined>;
-export async function getCached(
-  bot: Bot,
-  table: "guilds" | "channels" | "members",
-  key: bigint | DiscordenoGuild | DiscordenoChannel | DiscordenoMember,
-) {
-  const cached = typeof key === "bigint"
-    ? await bot.cache[table].get(key)
-    : key;
-
-  return typeof cached === "bigint" ? undefined : cached;
-}
-
 /** Calculates the permissions this member has in the given guild */
-export async function calculateBasePermissions(
-  bot: Bot,
+export function calculateBasePermissions(
+  bot: BotWithCache,
   guildOrId: bigint | DiscordenoGuild,
   memberOrId: bigint | DiscordenoMember,
 ) {
-  const guild = await getCached(bot, "guilds", guildOrId);
-  const member = await getCached(bot, "members", memberOrId);
+  const guild = typeof guildOrId === "bigint"
+    ? bot.guilds.get(guildOrId)
+    : guildOrId;
+  const member = typeof memberOrId === "bigint"
+    ? bot.members.get(memberOrId)
+    : memberOrId;
 
   if (!guild || !member) return 8n;
 
@@ -67,22 +44,26 @@ export async function calculateBasePermissions(
 }
 
 /** Calculates the permissions this member has for the given Channel */
-export async function calculateChannelOverwrites(
-  bot: Bot,
+export function calculateChannelOverwrites(
+  bot: BotWithCache,
   channelOrId: bigint | DiscordenoChannel,
   memberOrId: bigint | DiscordenoMember,
 ) {
-  const channel = await getCached(bot, "channels", channelOrId);
+  const channel = typeof channelOrId === "bigint"
+    ? bot.channels.get(channelOrId)
+    : channelOrId;
 
   // This is a DM channel so return ADMINISTRATOR permission
   if (!channel?.guildId) return 8n;
 
-  const member = await getCached(bot, "members", memberOrId);
+  const member = typeof memberOrId === "bigint"
+    ? bot.members.get(memberOrId)
+    : memberOrId;
 
   if (!channel || !member) return 8n;
 
   // Get all the role permissions this member already has
-  let permissions = await calculateBasePermissions(
+  let permissions = calculateBasePermissions(
     bot,
     channel.guildId,
     member,
@@ -125,7 +106,9 @@ export async function calculateChannelOverwrites(
     return id === member.id;
   });
   if (overwriteMember) {
-    const [_type, _id, allowBits, denyBits] = separateOverwrites(overwriteMember);
+    const [_type, _id, allowBits, denyBits] = separateOverwrites(
+      overwriteMember,
+    );
 
     permissions &= ~denyBits;
     permissions |= allowBits;
@@ -149,14 +132,14 @@ export function validatePermissions(
 }
 
 /** Checks if the given member has these permissions in the given guild */
-export async function hasGuildPermissions(
-  bot: Bot,
+export function hasGuildPermissions(
+  bot: BotWithCache,
   guild: bigint | DiscordenoGuild,
   member: bigint | DiscordenoMember,
   permissions: PermissionStrings[],
 ) {
   // First we need the role permission bits this member has
-  const basePermissions = await calculateBasePermissions(
+  const basePermissions = calculateBasePermissions(
     bot,
     guild,
     member,
@@ -167,7 +150,7 @@ export async function hasGuildPermissions(
 
 /** Checks if the bot has these permissions in the given guild */
 export function botHasGuildPermissions(
-  bot: Bot,
+  bot: BotWithCache,
   guild: bigint | DiscordenoGuild,
   permissions: PermissionStrings[],
 ) {
@@ -176,14 +159,14 @@ export function botHasGuildPermissions(
 }
 
 /** Checks if the given member has these permissions for the given channel */
-export async function hasChannelPermissions(
-  bot: Bot,
+export function hasChannelPermissions(
+  bot: BotWithCache,
   channel: bigint | DiscordenoChannel,
   member: bigint | DiscordenoMember,
   permissions: PermissionStrings[],
 ) {
   // First we need the overwrite bits this member has
-  const channelOverwrites = await calculateChannelOverwrites(
+  const channelOverwrites = calculateChannelOverwrites(
     bot,
     channel,
     member,
@@ -194,7 +177,7 @@ export async function hasChannelPermissions(
 
 /** Checks if the bot has these permissions f0r the given channel */
 export function botHasChannelPermissions(
-  bot: Bot,
+  bot: BotWithCache,
   channel: bigint | DiscordenoChannel,
   permissions: PermissionStrings[],
 ) {
@@ -215,14 +198,14 @@ export function missingPermissions(
 }
 
 /** Get the missing Guild permissions this member has */
-export async function getMissingGuildPermissions(
-  bot: Bot,
+export function getMissingGuildPermissions(
+  bot: BotWithCache,
   guild: bigint | DiscordenoGuild,
   member: bigint | DiscordenoMember,
   permissions: PermissionStrings[],
 ) {
   // First we need the role permission bits this member has
-  const permissionBits = await calculateBasePermissions(
+  const permissionBits = calculateBasePermissions(
     bot,
     guild,
     member,
@@ -232,14 +215,14 @@ export async function getMissingGuildPermissions(
 }
 
 /** Get the missing Channel permissions this member has */
-export async function getMissingChannelPermissions(
-  bot: Bot,
+export function getMissingChannelPermissions(
+  bot: BotWithCache,
   channel: bigint | DiscordenoChannel,
   member: bigint | DiscordenoMember,
   permissions: PermissionStrings[],
 ) {
   // First we need the role permissino bits this member has
-  const permissionBits = await calculateChannelOverwrites(
+  const permissionBits = calculateChannelOverwrites(
     bot,
     channel,
     member,
@@ -249,13 +232,13 @@ export async function getMissingChannelPermissions(
 }
 
 /** Throws an error if this member has not all of the given permissions */
-export async function requireGuildPermissions(
-  bot: Bot,
+export function requireGuildPermissions(
+  bot: BotWithCache,
   guild: bigint | DiscordenoGuild,
   member: bigint | DiscordenoMember,
   permissions: PermissionStrings[],
 ) {
-  const missing = await getMissingGuildPermissions(
+  const missing = getMissingGuildPermissions(
     bot,
     guild,
     member,
@@ -269,7 +252,7 @@ export async function requireGuildPermissions(
 
 /** Throws an error if the bot does not have all permissions */
 export function requireBotGuildPermissions(
-  bot: Bot,
+  bot: BotWithCache,
   guild: bigint | DiscordenoGuild,
   permissions: PermissionStrings[],
 ) {
@@ -278,13 +261,13 @@ export function requireBotGuildPermissions(
 }
 
 /** Throws an error if this member has not all of the given permissions */
-export async function requireChannelPermissions(
-  bot: Bot,
+export function requireChannelPermissions(
+  bot: BotWithCache,
   channel: bigint | DiscordenoChannel,
   member: bigint | DiscordenoMember,
   permissions: PermissionStrings[],
 ) {
-  const missing = await getMissingChannelPermissions(
+  const missing = getMissingChannelPermissions(
     bot,
     channel,
     member,
@@ -298,7 +281,7 @@ export async function requireChannelPermissions(
 
 /** Throws an error if the bot has not all of the given channel permissions */
 export function requireBotChannelPermissions(
-  bot: Bot,
+  bot: BotWithCache,
   channel: bigint | DiscordenoChannel,
   permissions: PermissionStrings[],
 ) {
@@ -328,8 +311,8 @@ export function calculateBits(permissions: PermissionStrings[]) {
 }
 
 /** Internal function to check if the bot has the permissions to set these overwrites */
-export async function requireOverwritePermissions(
-  bot: Bot,
+export function requireOverwritePermissions(
+  bot: BotWithCache,
   guildOrId: bigint | DiscordenoGuild,
   overwrites: Overwrite[],
 ) {
@@ -349,24 +332,26 @@ export async function requireOverwritePermissions(
     requiredPerms = new Set<PermissionStrings>(["ADMINISTRATOR"]);
   }
 
-  await requireGuildPermissions(bot, guildOrId, bot.id, [
+  requireGuildPermissions(bot, guildOrId, bot.id, [
     ...requiredPerms,
   ]);
 }
 
 /** Gets the highest role from the member in this guild */
-export async function highestRole(
-  bot: Bot,
+export function highestRole(
+  bot: BotWithCache,
   guildOrId: bigint | DiscordenoGuild,
   memberOrId: bigint | DiscordenoMember,
 ) {
-  const guild = await getCached(bot, "guilds", guildOrId);
-
+  const guild = typeof guildOrId === "bigint"
+    ? bot.guilds.get(guildOrId)
+    : guildOrId;
   if (!guild) throw new Error(Errors.GUILD_NOT_FOUND);
 
   // Get the roles from the member
-  const memberRoles = (await getCached(bot, "members", memberOrId))
-    ?.roles;
+  const memberRoles =
+    (typeof memberOrId === "bigint" ? bot.members.get(memberOrId) : memberOrId)
+      ?.roles;
   // This member has no roles so the highest one is the @everyone role
   if (!memberRoles) return guild.roles.get(guild.id)!;
 
@@ -393,14 +378,13 @@ export async function highestRole(
 }
 
 /** Checks if the first role is higher than the second role */
-export async function higherRolePosition(
-  bot: Bot,
+export function higherRolePosition(
+  bot: BotWithCache,
   guildOrId: bigint | DiscordenoGuild,
   roleId: bigint,
   otherRoleId: bigint,
 ) {
-  const guild = await getCached(bot, "guilds", guildOrId);
-
+  const guild = typeof guildOrId === "bigint" ? bot.guilds.get(guildOrId) : guildOrId;
   if (!guild) return true;
 
   const role = guild.roles.get(roleId);
@@ -416,17 +400,17 @@ export async function higherRolePosition(
 }
 
 /** Checks if the member has a higher position than the given role */
-export async function isHigherPosition(
-  bot: Bot,
+export function isHigherPosition(
+  bot: BotWithCache,
   guildOrId: bigint | DiscordenoGuild,
   memberId: bigint,
   compareRoleId: bigint,
 ) {
-  const guild = await getCached(bot, "guilds", guildOrId);
+  const guild = typeof guildOrId === "bigint" ? bot.guilds.get(guildOrId) : guildOrId;
 
   if (!guild || guild.ownerId === memberId) return true;
 
-  const memberHighestRole = await highestRole(bot, guild, memberId);
+  const memberHighestRole = highestRole(bot, guild, memberId);
   return higherRolePosition(
     bot,
     guild.id,

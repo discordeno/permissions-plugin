@@ -1,11 +1,11 @@
-import { Bot } from "../../../deps.ts";
+import { BotWithCache } from "../../../deps.ts";
 import { requireBotChannelPermissions } from "../../permissions.ts";
 
-export default function getArchivedThreads(bot: Bot) {
+export default function getArchivedThreads(bot: BotWithCache) {
   const getArchivedThreadsOld = bot.helpers.getArchivedThreads;
 
   bot.helpers.getArchivedThreads = async function (channelId, options) {
-    const channel = await bot.cache.channels.get(channelId);
+    const channel = await bot.channels.get(channelId);
 
     if (channel) {
       await requireBotChannelPermissions(
