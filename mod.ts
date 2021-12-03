@@ -3,6 +3,7 @@ import setupAddToThread from "./src/channels/threads/addToThread.ts";
 import setupGetArchivedThreads from "./src/channels/threads/getArchivedThreads.ts";
 import setupDeleteChannel from "./src/deleteChannel.ts";
 import setupEditMember from "./src/editMember.ts";
+import { createStageInstance } from "./src/stage.ts"
 
 // PLUGINS MUST TAKE A BOT ARGUMENT WHICH WILL BE MODIFIED
 export function enablePermissionsPlugin(bot: BotWithCache) {
@@ -19,6 +20,7 @@ export function enablePermissionsPlugin(bot: BotWithCache) {
   setupDeleteChannel(bot);
   setupEditMember(bot);
   setupGetArchivedThreads(bot);
+  createStageInstance(bot);
 
   // PLUGINS MUST RETURN THE BOT
   return bot;
