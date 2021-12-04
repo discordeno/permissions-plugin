@@ -30,7 +30,12 @@ export function deleteStageInstance(bot: BotWithCache) {
       "MUTE_MEMBERS",
       "MOVE_MEMBERS",
     ]);
-    
+
     return deleteStageInstanceOld(channelId);
   };
+}
+
+export default function setupStagePermChecks(bot: BotWithCache) {
+  createStageInstance(bot);
+  deleteStageInstance(bot);
 }
