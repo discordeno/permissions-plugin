@@ -2,6 +2,7 @@ import { BotWithCache } from "./deps.ts";
 import setupChannelPermChecks from "./src/channels/mod.ts";
 import setupDiscoveryPermChecks from "./src/discovery.ts";
 import setupEditMember from "./src/editMember.ts";
+import setupEmojiPermChecks from "./src/emojis.ts";
 
 // PLUGINS MUST TAKE A BOT ARGUMENT WHICH WILL BE MODIFIED
 export function enablePermissionsPlugin(bot: BotWithCache) {
@@ -16,6 +17,7 @@ export function enablePermissionsPlugin(bot: BotWithCache) {
   // BEGIN OVERRIDING HELPER FUNCTIONS
   setupChannelPermChecks(bot);
   setupDiscoveryPermChecks(bot);
+  setupEmojiPermChecks(bot);
   setupEditMember(bot);
 
   // PLUGINS MUST RETURN THE BOT
