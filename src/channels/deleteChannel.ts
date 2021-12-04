@@ -1,5 +1,5 @@
-import { BotWithCache, ChannelTypes } from "../deps.ts";
-import { requireBotGuildPermissions } from "./permissions.ts";
+import { BotWithCache, ChannelTypes } from "../../deps.ts";
+import { requireBotGuildPermissions } from "../permissions.ts";
 
 export default function deleteChannel(bot: BotWithCache) {
   const deleteChannelOld = bot.helpers.deleteChannel;
