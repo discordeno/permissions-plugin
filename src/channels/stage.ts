@@ -35,7 +35,22 @@ export function deleteStageInstance(bot: BotWithCache) {
   };
 }
 
+export function updateStageInstance(bot: BotWithCache) {
+  const updateStageInstanceOld = bot.helpers.updateStageInstance;
+
+  bot.helpers.updateStageInstance = function (channelId, data) {
+    requireBotChannelPermissions(bot, channelId, [
+      "MANAGE_CHANNELS",
+      "MUTE_MEMBERS",
+      "MOVE_MEMBERS",
+    ]);
+
+    return updateStageInstanceOld(channelId, data);
+  };
+}
+
 export default function setupStagePermChecks(bot: BotWithCache) {
   createStageInstance(bot);
   deleteStageInstance(bot);
+  updateStageInstance(bot);
 }
