@@ -1,5 +1,5 @@
-import { BotWithCache } from "../deps.ts";
-import { requireBotChannelPermissions } from "./permissions.ts";
+import { BotWithCache } from "../../deps.ts";
+import { requireBotChannelPermissions } from "../permissions.ts";
 
 export function createStageInstance(bot: BotWithCache) {
   const createStageInstanceOld = bot.helpers.createStageInstance;
@@ -18,5 +18,19 @@ export function createStageInstance(bot: BotWithCache) {
     ]);
 
     return createStageInstanceOld(channelId, topic, privacyLevel);
+  };
+}
+
+export function deleteStageInstance(bot: BotWithCache) {
+  const deleteStageInstanceOld = bot.helpers.deleteStageInstance;
+
+  bot.helpers.deleteStageInstance = function (channelId) {
+    requireBotChannelPermissions(bot, channelId, [
+      "MANAGE_CHANNELS",
+      "MUTE_MEMBERS",
+      "MOVE_MEMBERS",
+    ]);
+    
+    return deleteStageInstanceOld(channelId);
   };
 }
