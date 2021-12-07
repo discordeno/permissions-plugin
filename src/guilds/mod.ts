@@ -11,7 +11,7 @@ import getBans from "./getBans.ts";
 import getPruneCount from "./getPruneCount.ts";
 import getVanityUrl from "./getVanityUrl.ts";
 
-export default function setupChannelPermChecks(bot: BotWithCache) {
+export default function setupGuildPermChecks(bot: BotWithCache) {
   setupEventsPermChecks(bot);
   createGuild(bot);
   deleteGuild(bot);

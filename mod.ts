@@ -3,6 +3,8 @@ import setupChannelPermChecks from "./src/channels/mod.ts";
 import setupDiscoveryPermChecks from "./src/discovery.ts";
 import setupEditMember from "./src/editMember.ts";
 import setupEmojiPermChecks from "./src/emojis.ts";
+import setupGuildPermChecks from "./src/guilds/mod.ts";
+import setupIntegrationPermChecks from "./src/integrations.ts";
 
 // PLUGINS MUST TAKE A BOT ARGUMENT WHICH WILL BE MODIFIED
 export function enablePermissionsPlugin(bot: BotWithCache) {
@@ -19,6 +21,8 @@ export function enablePermissionsPlugin(bot: BotWithCache) {
   setupDiscoveryPermChecks(bot);
   setupEmojiPermChecks(bot);
   setupEditMember(bot);
+  setupGuildPermChecks(bot)
+  setupIntegrationPermChecks(bot);
 
   // PLUGINS MUST RETURN THE BOT
   return bot;
