@@ -7,6 +7,8 @@ import setupGuildPermChecks from "./src/guilds/mod.ts";
 import setupIntegrationPermChecks from "./src/integrations.ts";
 import setupInteractionPermChecks from "./src/interactions/mod.ts";
 import setupInvitesPermChecks from "./src/invites.ts";
+import setupMemberPermChecks from "./src/members/mod.ts";
+import setupMessagePermChecks from "./src/messages/mod.ts";
 
 // PLUGINS MUST TAKE A BOT ARGUMENT WHICH WILL BE MODIFIED
 export function enablePermissionsPlugin(bot: BotWithCache) {
@@ -27,6 +29,8 @@ export function enablePermissionsPlugin(bot: BotWithCache) {
   setupIntegrationPermChecks(bot);
   setupInteractionPermChecks(bot)
   setupInvitesPermChecks(bot);
+  setupMemberPermChecks(bot)
+  setupMessagePermChecks(bot);
 
   // PLUGINS MUST RETURN THE BOT
   return bot;
