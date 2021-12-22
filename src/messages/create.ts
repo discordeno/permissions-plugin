@@ -32,7 +32,6 @@ export function sendMessage(bot: BotWithCache) {
       );
     }
 
-    // Use ... for content length due to unicode characters and js .length handling
     if (
       content.content &&
       !bot.utils.validateLength(content.content, { max: 2000 })

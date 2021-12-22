@@ -9,6 +9,9 @@ import setupInteractionPermChecks from "./src/interactions/mod.ts";
 import setupInvitesPermChecks from "./src/invites.ts";
 import setupMemberPermChecks from "./src/members/mod.ts";
 import setupMessagePermChecks from "./src/messages/mod.ts";
+import setupMiscPermChecks from "./src/misc/mod.ts";
+import setupRolePermChecks from "./src/roles/mod.ts";
+import setupWebhooksPermChecks from "./src/webhooks/mod.ts";
 
 // PLUGINS MUST TAKE A BOT ARGUMENT WHICH WILL BE MODIFIED
 export function enablePermissionsPlugin(bot: BotWithCache) {
@@ -25,12 +28,15 @@ export function enablePermissionsPlugin(bot: BotWithCache) {
   setupDiscoveryPermChecks(bot);
   setupEmojiPermChecks(bot);
   setupEditMember(bot);
-  setupGuildPermChecks(bot)
+  setupGuildPermChecks(bot);
   setupIntegrationPermChecks(bot);
-  setupInteractionPermChecks(bot)
+  setupInteractionPermChecks(bot);
   setupInvitesPermChecks(bot);
-  setupMemberPermChecks(bot)
+  setupMemberPermChecks(bot);
   setupMessagePermChecks(bot);
+  setupMiscPermChecks(bot);
+  setupRolePermChecks(bot);
+  setupWebhooksPermChecks(bot);
 
   // PLUGINS MUST RETURN THE BOT
   return bot;
